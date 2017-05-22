@@ -78,19 +78,19 @@ def main(argv):
     project_name = 'multi_info_portal'
     project_dir = os.environ['HOME'] + os.sep + 'build' + os.sep + project_name + os.sep + project_name
     path = 'K:\zip\multi_info_portal_cache'
-    deploy_dir = path + os.sep + 'deploy_win'
+    update_pkg_dir = path + os.sep + 'update_win'
     project_cache = path + os.sep + project_name
 
     curr_time = time.strftime('%Y%m%d', time.localtime(time.time()))
-    export_zip_file = path + os.sep + 'zip' + os.sep + project_name + '_win_' + curr_time + '.zip'
-    deploy_zip_file = path + os.sep + 'zip' + os.sep + project_name + '_win' + os.sep + os.sep + 'deploy_win.zip'
+    export_zip_file = path + os.sep + 'zip' + os.sep + project_name + '_win_update_' + curr_time + '.zip'
+    update_zip_file = path + os.sep + 'zip' + os.sep + project_name + '_win_update' + os.sep + 'update_win.zip'
 
     remove_dir(project_cache + os.sep + project_name)
     shutil.copytree(project_dir, project_cache + os.sep + project_name)
 
-    zip_dir_with_empty_dir(project_cache, deploy_dir + os.sep + project_name + '.zip')
-    zip_dir_with_empty_dir(deploy_dir, deploy_zip_file)
-    zip_dir_with_empty_dir(path + os.sep + 'zip' + os.sep + project_name + '_win', export_zip_file)
+    zip_dir_with_empty_dir(project_cache, update_pkg_dir + os.sep + project_name + '.zip')
+    zip_dir_with_empty_dir(update_pkg_dir, update_zip_file)
+    zip_dir_with_empty_dir(path + os.sep + 'zip' + os.sep + project_name + '_win_update', export_zip_file)
 
 
 if __name__ == '__main__':

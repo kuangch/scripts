@@ -68,7 +68,7 @@ def main(argv):
     project_name = 'multi_info_portal'
     path = 'K:\zip\multi_info_portal_cache'
 
-    curr_time = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+    curr_time = time.strftime('%Y%m%d', time.localtime(time.time()))
 
     os.system('cp -r ' + project_name + ' '+path + os.sep + project_name)
 
