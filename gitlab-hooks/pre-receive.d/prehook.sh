@@ -10,7 +10,6 @@ echo "================================================"
 echo "Say Hi From Dilusense Gitlab Server." 
 echo "1. check code style "
 echo "2. check comment style ...etc."
-echo 
 
 #exit 0
 
@@ -43,9 +42,7 @@ then
   exit 0
 fi
 
-
 FLAG=0
-
 
 # check comments
 comments=`git log ${OLD_VALUE}..${NEW_VALUE} --pretty="DILUCOMMENTS:%B" |grep -v "^$"`
@@ -57,7 +54,7 @@ log "$comments"
 count=0
 line=`echo "$comments" |sed -n '/DILUCOMMENTS:/=' `
 cnt=`echo "$comments" | wc -l`
-num=`echo "$line" | wc -l`
+line=`echo $line $(expr $cnt + 1)`
 startLine=1
 
 
@@ -72,11 +69,12 @@ do
 
    echo ""
    echo "$comm" 
-   ret1=`echo "$comm"|sed -n 'N; /bug id:.*desc:/p; D;'` 
+   ret1=`echo "$comm"|grep ^bug\ id:` 
    ret2=`echo "$comm"|grep ^desc:`
    ret3=`echo "$comm"|grep ^tests:`
+   ret4=`echo "$comm"|grep ^task\ id:`
 
-   if [ "$ret1" = "" -o "$ret2" = "" -o "$ret3" = "" ] ;
+   if [ "$ret1" = "" -o "$ret2" = "" -o "$ret3" = "" -o "$ret4" = "" ] ;
    then
       echo "$comm" | awk '{print $1}' |grep "^#[0-9]*$" >> /dev/null
       if [ $? -eq 0 ] ;
@@ -90,10 +88,13 @@ do
           log "Merge branch"
           echo "Merge branch"
         else 
-          log "格式错误注解:" "$comm"
-          echo -e "格式错误注解:\n" "$comm"
+          log "格式错误:" "$comm"
+          echo -e "格式错误:\n" "$comm"
           echo "提交Comments格式有误，请严格按照如下格式"
-          echo "    bug id:1234"
+          echo "    bug id:001"
+          echo "    task id:001"
+          echo "    time:8 (可选)"
+          echo "    done (可选)"
           echo "    desc:此次提交的描述"
           echo "    tests:为此次提交做过的测试"
           exit 1
@@ -105,47 +106,12 @@ do
 done
 
 
-
-comm=`echo "$comments" | sed -n "${startLine},${cnt}p" |sed 's/DILUCOMMENTS://'`
-echo ""
-echo "$comm" 
-ret1=`echo "$comm"|sed -n 'N; /bug id:.*desc:/p; D;'`
-ret2=`echo "$comm"|grep ^desc:`
-ret3=`echo "$comm"|grep ^tests:`
-
-if [ "$ret1" = "" -o "$ret2" = "" -o "$ret3" = "" ] ;
-then
-   echo "$comm" | awk '{print $1}' |grep "^#[0-9]*$" >> /dev/null
-   if [ $? -eq 0 ] ;
-   then
-     log "issue updated" 
-     echo "issue updated"
-   else
-     echo "$comm" | grep "^Merge branch" >> /dev/null
-     if [ $? -eq 0 ] ;
-     then
-       log "Merge branch"
-       echo "Merge branch"
-     else
-       log "格式错误注解:" "$comm"
-       echo -e "格式错误注解:" "$comm"
-       echo "提交Comments格式有误，请严格按照如下格式"
-       echo "    bug id:1234"
-       echo "    desc:此次提交的描述"
-       echo "    tests:为此次提交做过的测试"
-       exit 1
-     fi
-   fi
-fi
-
-
-rm -rf $tmpdir
 echo "******************"
 if [ $FLAG -eq 0 ]
 then
-    echo "✅  代码检查通过."
+    echo "√  代码检查通过."
 else
-    echo "❌  代码检查不通过!请酌情处理！"
+    echo "×  代码检查不通过!请酌情处理！"
 fi
 
 echo "================================================"
