@@ -3,9 +3,7 @@ setlocal EnableDelayedExpansion
 set curr=%~dp0
 
 goto check_android
-
-:wantdo
-adb -s !devSN! shell
+goto exit
 
 :check_android
 set devSN=none
@@ -29,14 +27,17 @@ if %cnt% equ 0 (
 :choice
 set /p input=请选择设备序号:
 if "!devices[%input%]!" == "" (
-	echo 无此选项【!input!】	
+	echo 无此选项【!input!】
+	goto exit
 ) else (
 	set devSN=!devices[%input%]!
 	echo 您选择了设备: !devSN!
 	goto wantdo
 )
+
+:wantdo
+adb -s !devSN! shell
+
 :exit
 pause
 exit
-
-pause
